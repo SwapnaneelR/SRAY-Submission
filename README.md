@@ -18,8 +18,8 @@ This repository contains the following folders:
 
 1. **Clone the Repository**  
    ```bash
-   git clone https://github.com/Algozenith/chrome-ext-problem-tracker.git
-   cd chrome-ext-problem-tracker
+   git clone https://github.com/SwapnaneelR/SRAY-Submission
+   cd SRAY-Submission
    ```
 
 2. **Load the Extension in Chrome**  
