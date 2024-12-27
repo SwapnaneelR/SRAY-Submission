@@ -2,3 +2,10 @@ aesthetics
 
 dark/light
     
+description -> button goes up
+
+ai -> context
+
+api key from user === my api key valid user -> fetch else no fetch
+
+

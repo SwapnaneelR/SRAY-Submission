@@ -171,7 +171,7 @@ async function sendMessage(input, messages) {
 
     // Display user's message
     const userBubble = document.createElement('div');
-    userBubble.textContent = `You: ${userMessage}`;
+    userBubble.textContent = `YOU :  ${userMessage}`;
     userBubble.style.marginBottom = '5px';
     userBubble.style.color = '#ffffff';
     userBubble.style.width = 'fit-content';
@@ -207,13 +207,24 @@ async function sendMessage(input, messages) {
         if (response.ok) {
             const data = await response.json();
             const aiResponse = data.candidates[0]?.content?.parts?.[0]?.text || 'AI could not generate a response.';
-
-            botBubble.textContent = `AI: ${aiResponse}`;
+              if (aiResponse.includes('function')) {
+                const codeSnippet = document.createElement('pre');
+                codeSnippet.style.backgroundColor = '#f0f0f0';
+                codeSnippet.style.border = '1px solid #ccc';
+                codeSnippet.style.padding = '10px';
+                codeSnippet.style.borderRadius = '5px';
+                codeSnippet.textContent = aiResponse;
+                botBubble.textContent = 'AI: Here\'s the code snippet:';
+                messages.appendChild(codeSnippet);
+            } else {
+                botBubble.textContent = `AI: ${aiResponse}`;
+            }
+            botBubble.textContent = `AI :  ${aiResponse}`;
         } else {
-            botBubble.textContent = 'AI: Sorry, there was an error processing your request.';
+            botBubble.textContent = 'AI :  Sorry, there was an error processing your request.';
         }
     } catch (error) {
-        botBubble.textContent = 'AI: An error occurred while connecting to the AI API.';
+        botBubble.textContent = 'AI :  An error occurred while connecting to the AI API.';
         console.error(error);
     }
 
@@ -230,7 +241,7 @@ function initializeChat(messages, details) {
 
     // Add preloaded information to the chatbox
     const introBubble = document.createElement('div');
-    introBubble.textContent = `AI: Hi! I already know about the question. Here are the details:`;
+    introBubble.textContent = `AI :  Hi! I already know about the question. Here are the details:`;
     introBubble.style.marginBottom = '10px';
     introBubble.style.color = '#ADD8E6';
     messages.appendChild(introBubble);
