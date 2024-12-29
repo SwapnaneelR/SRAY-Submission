@@ -4,6 +4,7 @@
 const mainbtnImg = chrome.runtime.getURL("assets/save.png");
 
 let lastVis = "";
+let chatCleared = false;
 
 function isPageChange() {
     const currPage = window.location.pathname;
@@ -18,11 +19,15 @@ function isPageChange() {
 function checkPageChange(forceCheck = false) {
     if (!forceCheck && !isPageChange()) return;
 
+ 
+    
     if (isOnProblemsPath()) {
         extractProblemDetails();
         addMainButton();
+       
     }
 }
+
 
 function isOnProblemsPath() {
     const pathname = window.location.pathname;
@@ -34,12 +39,16 @@ function observeUrlChanges() {
         checkPageChange(true);
     });
 
-    // Observe changes in the body or document for dynamic changes
     observer.observe(document.body, { childList: true, subtree: true });
 
     checkPageChange(true);
 }
-
+function clearChatMessages() {
+    const chatMessagesElement = document.getElementById('chatbot-messages');  
+    if (chatMessagesElement) {
+        chatMessagesElement.innerHTML = ''; 
+    }
+}
 function addMainButton() {
     if (document.getElementById('main-button')) return;
 
@@ -79,15 +88,18 @@ function addMainButton() {
         mainButton.style.transform = 'scale(1)';
     };
 
-    const askDoubtButton = document.getElementsByClassName('coding_desc_container__gdB9M')[0];
+    const askDoubtButton = document.getElementsByClassName('py-4 px-3 coding_desc_container__gdB9M')[0];
     if (askDoubtButton) {
-        askDoubtButton.insertAdjacentElement('afterend', mainButton);
+        askDoubtButton.insertAdjacentElement('beforeend', mainButton);
     } else {
         console.error("Element with the specified class not found.");
     }
 
     mainButton.addEventListener('click', toggleChatbot);
 }
+
+
+
 function toggleChatbot() {
     let chatbot = document.getElementById('chatbot-container');
 
@@ -99,7 +111,7 @@ function toggleChatbot() {
         chatbot.style.border = '1px solid #ccc';
         chatbot.style.padding = '10px';
         chatbot.style.margin = '10px';
-        chatbot.style.width = '45vw';
+        chatbot.style.width = '42vw';
         chatbot.style.maxWidth = '50vw';
         chatbot.style.borderRadius = '10px';
         chatbot.style.scrollBehavior = 'smooth';
@@ -109,10 +121,8 @@ function toggleChatbot() {
         // Chat messages area
         const messages = document.createElement('div');
         messages.id = 'chatbot-messages';
-        messages.style.flex = '1'; // Allow the messages area to take available space
-        // messages.style.msOverflowStyle = 'none'
-        messages.style.webkitOverflowScrolling = 'touch'; 
-        messages.style.overflowY = 'auto'; // Enable scrolling if content exceeds height
+        messages.style.flex = '1';  
+        messages.style.overflowY = 'auto';  
         messages.style.maxHeight = 'calc(100% - 60px)'; // Adjust height to ensure the input stays at the bottom
         messages.style.paddingRight = '10px'; // Adding some padding on the right for a clean look
         chatbot.appendChild(messages);
@@ -164,7 +174,7 @@ function toggleChatbot() {
             sendMessage(input, messages);
         });
     } else {
-        chatbot.style.display = chatbot.style.display === 'none' ? 'block' : 'none';
+        chatbot.style.display = chatbot.style.display === 'none' ? 'flex' : 'none';
     }
 }
 
@@ -174,10 +184,11 @@ async function sendMessage(input, messages) {
 
     // Display user's message
     const userBubble = document.createElement('div');
-    userBubble.textContent = `YOU: ${userMessage}`;
+    userBubble.textContent = `YOU : ${userMessage}`;
     userBubble.style.marginBottom = '5px';
     userBubble.style.color = '#ffffff';
     userBubble.style.width = 'fit-content';
+    userBubble.style.fontSize = '16px';
     messages.appendChild(userBubble);
 
     input.value = ''; // Clear the input
@@ -207,10 +218,9 @@ async function sendMessageToAI(userMessage, messages) {
         const validApiKey = 'AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY';
 
         if (storedApiKey !== validApiKey) {
-            botBubble.textContent = 'AI: Invalid API key. Please enter a valid key.';
+            botBubble.textContent = 'AI : Invalid API key. Please enter a valid key.';
             return; // Exit early, no fetch request
         }
-        // alert(storedApiKey)
 
         try {
             // Make the request to the AI API with the valid API key
@@ -234,12 +244,12 @@ async function sendMessageToAI(userMessage, messages) {
             if (response.ok) {
                 const data = await response.json();
                 const aiResponse = data.candidates[0]?.content?.parts?.[0]?.text || 'AI could not generate a response.';
-                botBubble.innerHTML = `<span style="color: #ADD8E6;">AI: ${renderMarkdown(aiResponse)}</span>`;
+                botBubble.innerHTML = `<span style="color: #ADD8E6;">AI : ${renderMarkdown(aiResponse)}</span>`;
             } else {
                 handleAIError(messages);
             }
         } catch (error) {
-            botBubble.textContent = 'AI: An error occurred while fetching the response.';
+            botBubble.textContent = 'AI : An error occurred while fetching the response.';
             console.error(error);
         }
     });
@@ -248,8 +258,9 @@ async function sendMessageToAI(userMessage, messages) {
 
 function handleAIError(messages) {
     const botBubble = document.createElement('div');
-    botBubble.textContent = 'AI: Sorry, there was an error processing your request.';
+    botBubble.textContent = 'AI : Sorry, there was an error processing your request.';
     botBubble.style.color = '#ADD8E6';
+    botBubble.style.fontSize = '18px';
     messages.appendChild(botBubble);
     // messages.scrollTop = messages.scrollHeight;
 }
@@ -282,7 +293,7 @@ function initializeChat(messages, details) {
 
     // Send the context to the AI to initialize the conversation
     const introBubble = document.createElement('div');
-    introBubble.textContent = `AI: Here are the details about the current question:`;
+    introBubble.textContent = `AI : Here are the details about the current question:`;
     introBubble.style.marginBottom = '10px';
     introBubble.style.color = '#ADD8E6';
     messages.appendChild(introBubble);
@@ -302,18 +313,84 @@ function initializeChat(messages, details) {
     // Send this context to the AI to prepare it for the interaction
     sendMessageToAI(`Context: \n**Question:** ${questionName}\n**Description:** ${description}\n**Constraints:** ${constraints}`, messages);
 }
-
-// Markdown rendering function for rich text
 function renderMarkdown(text) {
     return text
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-        .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italics
-        .replace(/`([^`]+)`/g, '<code style="color: #ADD8E6;">$1</code>') // Inline code
-        .replace(/\n/g, '<br>') // Line breaks
-        .replace(/\# (.*?)\n/g, '<h1>$1</h1>') // Heading 1
-        .replace(/\#\# (.*?)\n/g, '<h2>$1</h2>') // Heading 2
-        .replace(/\#\#\# (.*?)\n/g, '<h3>$1</h3>'); // Heading 3
+        // Handle fenced code blocks (e.g., ```cpp ... ```), preserving the language
+        .replace(/```([a-z]*)\n([\s\S]*?)```/g, function(_, lang, code) {
+            const highlightedCode = code
+                .replace(/</g, "&lt;") // Escape HTML to prevent issues
+                .replace(/>/g, "&gt;"); // Escape HTML to prevent issues
+            return `<pre><code class="${lang}" style="color: #ADD8E6; font-size: 16px;">${highlightedCode}</code></pre>`;
+        })
+        // Inline code (e.g., `inline code`)
+        .replace(/`([^`]+)`/g, '<code style="color: #ADD8E6; font-size: 16px;">$1</code>') 
+        // Bold text (**bold**)
+        .replace(/\*\*(.*?)\*\*/g, '<strong style="font-size: 16px;">$1</strong>') 
+        // Italics text (*italic*)
+        .replace(/\*(.*?)\*/g, '<em style="font-size: 16px;">$1</em>') 
+        // Line breaks
+        .replace(/\n/g, '<br>') 
+        // Heading 1 (# heading 1)
+        .replace(/^\# (.*?)$/gm, '<h1 style="font-size: 16px;">$1</h1>') 
+        // Heading 2 (## heading 2)
+        .replace(/^\#\# (.*?)$/gm, '<h2 style="font-size: 16px;">$1</h2>') 
+        // Heading 3 (### heading 3)
+        .replace(/^\#\#\# (.*?)$/gm, '<h3 style="font-size: 16px;">$1</h3>') 
+        // Blockquotes (e.g., > blockquote)
+        .replace(/^\> (.*?)$/gm, '<blockquote style="font-size: 16px;">$1</blockquote>') 
+        // Links [text](URL)
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2" style="font-size: 16px;">$1</a>') 
+        // Unordered list items (- list item)
+        .replace(/^\- (.*?)$/gm, '<li style="font-size: 16px;">$1</li>') 
+        // Ordered list items (1. list item)
+        .replace(/^\d+\. (.*?)$/gm, '<li style="font-size: 16px;">$1</li>') 
+        // Wrap list items in <ul>
+        .replace(/(<li>.*?<\/li>)(<br>)+/g, '<ul style="font-size: 16px;">$1</ul>') 
+        // Images ![alt text](image URL)
+        .replace(/^\!\[([^\]]*)\]\((https?:\/\/[^\s]+)\)/g, '<img alt="$1" src="$2" />') 
+        // Horizontal rules (---)
+        .replace(/^\-{3,}$/gm, '<hr style="font-size: 16px;">');
 }
 
-// Observe URL changes to ensure proper reactivity
+
+
+// Observe URL changes to ensure proper reactivity.
 observeUrlChanges();
+
+
+ 
+function trackUrlAndClearChat() {
+    let lastUrl = window.location.href;
+
+ 
+    function clearChatMessages() {
+        const chatMessagesElement = document.querySelector('#chatbot-messages'); // Adjust the selector if needed
+        if (chatMessagesElement) {
+            chatMessagesElement.innerHTML = ''; // Clear the content of the chat container
+        }
+    }
+ 
+    function isOnProblemsPath() {
+        const pathname = window.location.pathname;
+        return pathname.includes('/problems/');
+    }
+ 
+    function handleUrlChange() {
+        const currentUrl = window.location.href;
+        if (currentUrl !== lastUrl) { 
+            lastUrl = currentUrl;  
+            if (isOnProblemsPath()) {
+                clearChatMessages();  
+            }
+        }
+    }
+ 
+    window.addEventListener('popstate', handleUrlChange);
+ 
+    window.addEventListener('hashchange', handleUrlChange);
+
+     
+    setInterval(handleUrlChange, 500); 
+}
+ 
+trackUrlAndClearChat();

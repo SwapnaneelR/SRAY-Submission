@@ -1,3 +1,4 @@
+
 const validApiKey = 'AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY';
 const submitButton = document.getElementById('submit-button');
 const inputField = document.getElementById('api-key-input');
@@ -20,7 +21,7 @@ submitButton.addEventListener('click', () => {
       if (apiKey === validApiKey) {
         message.textContent = 'API Key is valid! You can now use the chatbot.';
         message.style.color = 'green';
-        
+
       }
       else {
       message.textContent = 'API Key is invalid! You cannot use the chatbot.';

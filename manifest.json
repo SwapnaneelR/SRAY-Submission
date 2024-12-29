@@ -3,7 +3,7 @@
   "name": "AlgoAid",
   "version": "0.1",
   "author": "Swapnaneel Ray",
-  "description": "This Chrome extension allows users to talk to a AI powered chatbot in case they are stuck on any problem on the AZ platform.",
+  "description": "This Chrome extension allows users to talk to a AI powered chatbot",
   "permissions": [
     "storage",
     "tabs"
