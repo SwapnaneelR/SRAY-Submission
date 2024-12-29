@@ -59,7 +59,7 @@ function addMainButton() {
     mainButton.style.alignItems = 'center';
     mainButton.style.justifyContent = 'center';
     mainButton.style.padding = '8px 16px';
-    mainButton.style.border = '0.2px solid white';
+    mainButton.style.border = '0.5px solid white';
     mainButton.style.borderRadius = '5px';
     mainButton.style.backgroundColor = '#2B384E';
     mainButton.style.color = '#f8f9fa';
@@ -67,6 +67,9 @@ function addMainButton() {
     mainButton.style.cursor = 'pointer';
     mainButton.style.transition = 'background-color 0.3s, transform 0.3s';
     mainButton.style.margin = '17px';
+    mainButton.style.height = '50px';
+    mainButton.style.width = '150px';
+
 
     const img = document.createElement('img');
     img.src = mainbtnImg;
@@ -76,16 +79,18 @@ function addMainButton() {
     mainButton.appendChild(img);
 
     const txt = document.createElement('span');
-    txt.innerHTML = 'AI Help!';
+    txt.innerHTML = ' AI Help ! ';
     mainButton.appendChild(txt);
-
+    txt.style.fontSize = '18px';
     mainButton.onmouseover = () => {
-        mainButton.style.backgroundColor = '#495057';
+        mainButton.style.backgroundColor = '#0088ff';
+        mainButton.style.border = 'none';
         mainButton.style.transform = 'scale(1.05)';
     };
     mainButton.onmouseout = () => {
         mainButton.style.backgroundColor = '#2B384E';
-        mainButton.style.transform = 'scale(1)';
+         mainButton.style.border = '0.5px solid white';
+         mainButton.style.transform = 'scale(1)';
     };
 
     const askDoubtButton = document.getElementsByClassName('py-4 px-3 coding_desc_container__gdB9M')[0];
@@ -96,6 +101,13 @@ function addMainButton() {
     }
 
     mainButton.addEventListener('click', toggleChatbot);
+    mainButton.addEventListener('click', () => {
+    const chatBox = document.getElementById('chatbot-container');
+    window.scrollTo({
+        top: chatBox.scrollHeight,  
+        behavior: 'smooth',  
+    });
+});
 }
 
 
@@ -222,7 +234,6 @@ async function sendMessageToAI(userMessage, messages) {
 
 
         if (storedApiKey !== validApiKey) {
-            clearChatMessages();
             botBubble.textContent = 'AI : Invalid API key. Please enter a valid key.';
             return;
         }
