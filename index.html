@@ -5,27 +5,46 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
+   <title>API Key Validation</title>
+   <style>
+      body {
+         font-family: Arial, sans-serif;
+         padding: 20px;
+         width: 300px;
+      }
+
+      input {
+         width: 100%;
+         padding: 8px;
+         margin-bottom: 10px;
+      }
+
+      button {
+         width: 100%;
+         padding: 8px;
+         background-color: #007bff;
+         color: white;
+         border: none;
+         cursor: pointer;
+      }
+
+      button:disabled {
+         background-color: #ccc;
+      }
+   </style>
 </head>
-<link rel="stylesheet" href="style.css">
+
 <body>
-   <form action=""
-   class = 'form1'
-   >  
-      <h2>
-         WELCOME USER !
-      </h2>
-      <h4>Enter The API Key</h4>
-      <input 
-      type = "text"
-      id="AK1010"
-      placeholder="Example : ABCD .. "
-      />
-      <button>Submit!</button>
-   </form>
+   <h3>Enter API Key</h3>
+   <input type="text" id="api-key-input" placeholder="Enter your API key" />
+   <button id="submit-button">Submit</button>
+   <p id="message"></p>
+
+   <script src="scripts.js"></script>
 </body>
-<script src="scripts.js"></script>
+
 </html>

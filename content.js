@@ -19,6 +19,7 @@ function checkPageChange(forceCheck = false) {
     if (!forceCheck && !isPageChange()) return;
 
     if (isOnProblemsPath()) {
+        extractProblemDetails();
         addMainButton();
     }
 }
@@ -78,7 +79,7 @@ function addMainButton() {
         mainButton.style.transform = 'scale(1)';
     };
 
-    const askDoubtButton = document.querySelector('.py-4.px-3.coding_desc_container__gdB9M');
+    const askDoubtButton = document.getElementsByClassName('coding_desc_container__gdB9M')[0];
     if (askDoubtButton) {
         askDoubtButton.insertAdjacentElement('afterend', mainButton);
     } else {
@@ -87,7 +88,6 @@ function addMainButton() {
 
     mainButton.addEventListener('click', toggleChatbot);
 }
-
 function toggleChatbot() {
     let chatbot = document.getElementById('chatbot-container');
 
@@ -95,6 +95,7 @@ function toggleChatbot() {
         // Create chatbot UI
         chatbot = document.createElement('div');
         chatbot.id = 'chatbot-container';
+        chatbot.style.height = '500px'; // Set the height of the chatbot container
         chatbot.style.border = '1px solid #ccc';
         chatbot.style.padding = '10px';
         chatbot.style.margin = '10px';
@@ -102,21 +103,25 @@ function toggleChatbot() {
         chatbot.style.maxWidth = '50vw';
         chatbot.style.borderRadius = '10px';
         chatbot.style.scrollBehavior = 'smooth';
-
-        // chatbot.style.backgroundColor = '#';
+        chatbot.style.display = 'flex';
+        chatbot.style.flexDirection = 'column'; // Flexbox for better layout control
 
         // Chat messages area
         const messages = document.createElement('div');
         messages.id = 'chatbot-messages';
-        messages.style.height = '200px';
-        messages.style.overflowY = 'auto';
-        messages.style.borderBottom = '1px solid #ddd';
+        messages.style.flex = '1'; // Allow the messages area to take available space
+        // messages.style.msOverflowStyle = 'none'
+        messages.style.webkitOverflowScrolling = 'touch'; 
+        messages.style.overflowY = 'auto'; // Enable scrolling if content exceeds height
+        messages.style.maxHeight = 'calc(100% - 60px)'; // Adjust height to ensure the input stays at the bottom
+        messages.style.paddingRight = '10px'; // Adding some padding on the right for a clean look
         chatbot.appendChild(messages);
 
         // Input area
         const inputContainer = document.createElement('div');
         inputContainer.style.display = 'flex';
         inputContainer.style.marginTop = '10px';
+        inputContainer.style.marginBottom = '10px'; // Adding margin to prevent input area from sticking to the bottom
 
         const input = document.createElement('input');
         input.type = 'text';
@@ -140,7 +145,6 @@ function toggleChatbot() {
         sendButton.style.borderRadius = '4px';
         sendButton.style.cursor = 'pointer';
         sendButton.style.transition = 'background-color 0.3s';
-     
 
         inputContainer.appendChild(input);
         inputContainer.appendChild(sendButton);
@@ -148,124 +152,168 @@ function toggleChatbot() {
 
         const mainButton = document.getElementById('main-button');
         mainButton.insertAdjacentElement('afterend', chatbot);
-        
-    input.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            sendMessage(input, messages);
-        }
-    });
 
-    // Add event listener for the send button click
-    sendButton.addEventListener('click', function () {
-        sendMessage(input, messages);
-    });
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                sendMessage(input, messages);
+            }
+        });
+
+        // Add event listener for the send button click
+        sendButton.addEventListener('click', function () {
+            sendMessage(input, messages);
+        });
     } else {
         chatbot.style.display = chatbot.style.display === 'none' ? 'block' : 'none';
     }
-    
-
 }
+
 async function sendMessage(input, messages) {
     const userMessage = input.value.trim();
     if (!userMessage) return;
 
     // Display user's message
     const userBubble = document.createElement('div');
-    userBubble.textContent = `YOU :  ${userMessage}`;
+    userBubble.textContent = `YOU: ${userMessage}`;
     userBubble.style.marginBottom = '5px';
     userBubble.style.color = '#ffffff';
     userBubble.style.width = 'fit-content';
     messages.appendChild(userBubble);
 
-    input.value = ''; 
+    input.value = ''; // Clear the input
 
     // Display AI typing placeholder
+    const botBubble = document.createElement('div');
+    botBubble.style.marginBottom = '10px';
+    botBubble.style.color = '#ADD8E6';
+    messages.appendChild(botBubble);
+
+    // Send the message to the AI with context
+    sendMessageToAI(userMessage, messages);
+}
+
+async function sendMessageToAI(userMessage, messages) {
+    const context = getContextForAI();  // Get the problem context to send to the AI
+    
+    // Create a bot bubble placeholder
     const botBubble = document.createElement('div');
     botBubble.textContent = 'AI is typing...';
     botBubble.style.marginBottom = '10px';
     botBubble.style.color = '#ADD8E6';
     messages.appendChild(botBubble);
-    // initializeChat(messages, extractedDetails);
-    const API_KEY = 'AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY';
-    // Call AI API
-    try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [
-                        {
-                            parts: [{ text: userMessage }]
-                        }
-                    ]
-                })
-            }
-        );
 
-        if (response.ok) {
-            const data = await response.json();
-            const aiResponse = data.candidates[0]?.content?.parts?.[0]?.text || 'AI could not generate a response.';
-              if (aiResponse.includes('function')) {
-                const codeSnippet = document.createElement('pre');
-                codeSnippet.style.backgroundColor = '#f0f0f0';
-                codeSnippet.style.border = '1px solid #ccc';
-                codeSnippet.style.padding = '10px';
-                codeSnippet.style.borderRadius = '5px';
-                codeSnippet.textContent = aiResponse;
-                botBubble.textContent = 'AI: Here\'s the code snippet:';
-                messages.appendChild(codeSnippet);
-            } else {
-                botBubble.textContent = `AI: ${aiResponse}`;
-            }
-            botBubble.textContent = `AI :  ${aiResponse}`;
-        } else {
-            botBubble.textContent = 'AI :  Sorry, there was an error processing your request.';
+    chrome.storage.local.get('apiKey', async (result) => {
+        const storedApiKey = result.apiKey;
+        const validApiKey = 'AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY';
+
+        if (storedApiKey !== validApiKey) {
+            botBubble.textContent = 'AI: Invalid API key. Please enter a valid key.';
+            return; // Exit early, no fetch request
         }
-    } catch (error) {
-        botBubble.textContent = 'AI :  An error occurred while connecting to the AI API.';
-        console.error(error);
-    }
+        // alert(storedApiKey)
 
-    // Scroll to the bottom of the messages
-    messages.scrollTop = messages.scrollHeight;
+        try {
+            // Make the request to the AI API with the valid API key
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${storedApiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                parts: [
+                                    { text: context + "\n" + userMessage }
+                                ]
+                            }
+                        ]
+                    })
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                const aiResponse = data.candidates[0]?.content?.parts?.[0]?.text || 'AI could not generate a response.';
+                botBubble.innerHTML = `<span style="color: #ADD8E6;">AI: ${renderMarkdown(aiResponse)}</span>`;
+            } else {
+                handleAIError(messages);
+            }
+        } catch (error) {
+            botBubble.textContent = 'AI: An error occurred while fetching the response.';
+            console.error(error);
+        }
+    });
+
+ }
+
+function handleAIError(messages) {
+    const botBubble = document.createElement('div');
+    botBubble.textContent = 'AI: Sorry, there was an error processing your request.';
+    botBubble.style.color = '#ADD8E6';
+    messages.appendChild(botBubble);
+    // messages.scrollTop = messages.scrollHeight;
 }
 
+function getContextForAI() {
+    // Here, we're using the details extracted from the page
+    const { questionName, description, constraints } = getExtractedProblemDetails();
+    return `Question: ${questionName}\nDescription: ${description}\nConstraints: ${constraints}\n`;
+}
 
-// adding the details on the screen as prior knowledge : 
+function getExtractedProblemDetails() {
+    const desc = document.getElementsByClassName('coding_desc__pltWY problem_paragraph')[0]?.innerText || 'Description not found.';
+    const title = document.getElementsByClassName('Header_resource_heading__cpRp1')[0]?.innerText || 'Title not found.';
+    const inputFormat = document.getElementsByClassName('coding_input_format__pv9fS problem_paragraph')[0]?.innerText || 'Input format not found.';
+    return { questionName: title, description: desc, constraints: inputFormat };
+}
 
+function extractProblemDetails() {
+    try {
+        const { questionName, description, constraints } = getExtractedProblemDetails();
+        const extractedDetails = { questionName, description, constraints };
+        initializeChat(document.getElementById('messages'), extractedDetails);
+    } catch (error) {
+        console.error('Error extracting problem details:', error);
+    }
+}
 
 function initializeChat(messages, details) {
     const { questionName, description, constraints } = details;
 
-    // Add preloaded information to the chatbox
+    // Send the context to the AI to initialize the conversation
     const introBubble = document.createElement('div');
-    introBubble.textContent = `AI :  Hi! I already know about the question. Here are the details:`;
+    introBubble.textContent = `AI: Here are the details about the current question:`;
     introBubble.style.marginBottom = '10px';
     introBubble.style.color = '#ADD8E6';
     messages.appendChild(introBubble);
 
     const detailsBubble = document.createElement('div');
-    detailsBubble.innerHTML = `<strong>Question:</strong> ${questionName}<br><strong>Description:</strong> ${description}<br><strong>Constraints:</strong> ${constraints}`;
+    detailsBubble.innerHTML = renderMarkdown(
+        `**Question:** ${questionName}\n**Description:** ${description}\n**Constraints:** ${constraints}`
+    );
     detailsBubble.style.marginBottom = '10px';
     detailsBubble.style.color = '#ADD8E6';
-    // detailsBubble.style.backgroundColor = '#f0f0f0';
-    // detailsBubble.style.padding = '10px';
     detailsBubble.style.borderRadius = '5px';
     detailsBubble.style.width = 'fit-content';
     messages.appendChild(detailsBubble);
 
-    messages.scrollTop = messages.scrollHeight;
+    // messages.scrollTop = messages.scrollHeight;
+
+    // Send this context to the AI to prepare it for the interaction
+    sendMessageToAI(`Context: \n**Question:** ${questionName}\n**Description:** ${description}\n**Constraints:** ${constraints}`, messages);
 }
-// Example details extracted from the current window
-// const extractedDetails = {
-//     questionName: 'How AI Works',
-//     description: 'Explain how artificial intelligence functions, including its core components and processes.',
-//     constraints: 'Keep the explanation under 50 words and use simple language.'
-// };
 
+// Markdown rendering function for rich text
+function renderMarkdown(text) {
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+        .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italics
+        .replace(/`([^`]+)`/g, '<code style="color: #ADD8E6;">$1</code>') // Inline code
+        .replace(/\n/g, '<br>') // Line breaks
+        .replace(/\# (.*?)\n/g, '<h1>$1</h1>') // Heading 1
+        .replace(/\#\# (.*?)\n/g, '<h2>$1</h2>') // Heading 2
+        .replace(/\#\#\# (.*?)\n/g, '<h3>$1</h3>'); // Heading 3
+}
 
-
-
+// Observe URL changes to ensure proper reactivity
 observeUrlChanges();
