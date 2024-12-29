@@ -37,9 +37,9 @@
   },
   "action": {
     "default_icon": {
-      "16": "assets/bookmark.png",
-      "24": "assets/bookmark.png",
-      "32": "assets/bookmark.png"   
+      "16": "assets/logo.png",
+      "24": "assets/logo.png",
+      "32": "assets/logo.png"   
     },
     "default_popup": "index.html",
     "default_title": "AlgoAid - AI chatbot to help users solve dsa doubts."

@@ -128,7 +128,10 @@ function toggleChatbot() {
         chatbot.style.borderRadius = '10px';
         chatbot.style.scrollBehavior = 'smooth';
         chatbot.style.display = 'flex';
-        chatbot.style.flexDirection = 'column'; // Flexbox for better layout control
+        chatbot.style.flexDirection = 'column';  
+        chatbot.style.overflowY = 'auto'; 
+        // chatbot.style.overflowY = 'scroll'; // Ensure scroll functionality
+        chatbot.style.scrollbarWidth = 'none';
 
         // Chat messages area
         const messages = document.createElement('div');
