@@ -1,8 +1,8 @@
-# README.md
 
-# 🌟 SRAY - AI Help Button for Maang.in 🌟
+# 🌟 SRAY - AI CHATBOT for Maang.in 🌟
 
-Welcome to the **SRAY** project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API, SRAY aims to enhance your learning experience.
+## AZ WINTER HACKATHON 2024 Submission
+Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API, SRAY aims to enhance your learning experience.
 
 ## 🚀 Features
 
@@ -23,7 +23,7 @@ Welcome to the **SRAY** project! This Google Chrome extension introduces an AI H
    - Enable "Developer mode" (toggle in the top right).
    - Click on "Load unpacked" and select the cloned repository folder.
 
-3. **Start Using SRAY**:
+3. **Start Using The Product**:
    - Go to [maang.in](https://maang.in).
    - Click on the AI Help button to start asking your questions! 💬
 
