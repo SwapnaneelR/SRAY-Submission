@@ -1,5 +1,9 @@
 
-const validApiKey = 'AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY';
+
+ 
+const manifest = chrome.runtime.getManifest();
+const validApiKey = manifest.env.API_KEY;
+
 const submitButton = document.getElementById('submit-button');
 const inputField = document.getElementById('api-key-input');
 const message = document.getElementById('message');

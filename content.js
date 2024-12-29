@@ -215,11 +215,16 @@ async function sendMessageToAI(userMessage, messages) {
 
     chrome.storage.local.get('apiKey', async (result) => {
         const storedApiKey = result.apiKey;
-        const validApiKey = 'AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY';
+        
+        const manifest = chrome.runtime.getManifest();
+        const validApiKey = manifest.env.API_KEY;
+
+
 
         if (storedApiKey !== validApiKey) {
+            clearChatMessages();
             botBubble.textContent = 'AI : Invalid API key. Please enter a valid key.';
-            return; // Exit early, no fetch request
+            return;
         }
 
         try {
