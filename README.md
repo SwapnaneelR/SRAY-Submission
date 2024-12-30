@@ -1,14 +1,17 @@
 
-# 🌟 SRAY - AI CHATBOT for Maang.in 🌟
+# 🌟 AI Powered CHATBOT for Maang.in 🌟
 
 ## AZ WINTER HACKATHON 2024 Submission
-Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API, this product aims to enhance your learning experience.
+Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API,this product aims to enhance your learning experience.
 
 ## 🚀 Features
 
-- **AI Assistance**: Get hints and solutions instantly for your queries.
-- **User-Friendly Interface**: Easy integration with maang.in.
+- **AI Assistance**: Get hints and solutions instantly for your queries by the click of a button.
+- **User Interface**: Easy integration with maang.in aesthetic.
 - **Fast Responses**: Leverages the power of the Gemini API for quick assistance.
+- **Awesome Responses**: The question description and constraints are fed to the ai for better and more relevant response.
+- **DOM Manipulation**: Both the button as well as the chats disappear as soon as we go to next question
+- **API KEY Validation**: The users are asked for the their api key which authenticates the user and later gets stored in chrome storage
 
 ## 🛠️ Installation
 
@@ -49,7 +52,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🎉 Acknowledgments
 
 - Thanks to the developers of the Gemini API for their incredible work!
-- Special thanks to all contributors and users who help make this project better!
+- Special thanks to all the AZ Mentors and their valuable insights that helped make this project better!
 
 ---
 
