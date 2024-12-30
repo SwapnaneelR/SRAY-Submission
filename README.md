@@ -6,12 +6,13 @@ Welcome to the project! This Google Chrome extension introduces an AI Help butto
 
 ## 🚀 Features
 
+- **API KEY Validation**: The users are asked for the their api key which authenticates the user and later gets stored in chrome storage
 - **AI Assistance**: Get hints and solutions instantly for your queries by the click of a button.
 - **User Interface**: Easy integration with maang.in aesthetic.
 - **Fast Responses**: Leverages the power of the Gemini API for quick assistance.
 - **Awesome Responses**: The question description and constraints are fed to the ai for better and more relevant response.
-- **DOM Manipulation**: Both the button as well as the chats disappear as soon as we go to next question
-- **API KEY Validation**: The users are asked for the their api key which authenticates the user and later gets stored in chrome storage
+- **DOM Manipulation**: Both the button as well as the chats disappear as soon as we go to next question.
+- **Data Storage**: When we come back to same question, chat history remains preserved using local Storage. 
 
 ## 🛠️ Installation
 

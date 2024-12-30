@@ -49,6 +49,7 @@ function clearChatMessages() {
         chatMessagesElement.innerHTML = ''; 
     }
 }
+
 function addMainButton() {
     if (document.getElementById('main-button')) return;
 
@@ -94,11 +95,11 @@ function addMainButton() {
     };
 
     const askDoubtButton = document.getElementsByClassName('py-4 px-3 coding_desc_container__gdB9M')[0];
-    if (askDoubtButton) {
-        askDoubtButton.insertAdjacentElement('beforeend', mainButton);
-    } else {
-        console.error("Element with the specified class not found.");
+    if (!askDoubtButton) {
+        console.error("Ask Doubt button not found. Main button will not be added.");
+        return;
     }
+    askDoubtButton.insertAdjacentElement('beforeend', mainButton);
 
     mainButton.addEventListener('click', toggleChatbot);
     mainButton.addEventListener('click', () => {
@@ -110,10 +111,13 @@ function addMainButton() {
 });
 }
 
-
-
 function toggleChatbot() {
     let chatbot = document.getElementById('chatbot-container');
+    const parentElement = document.getElementById('main-button').parentElement;
+    if (!parentElement) {
+        console.error("Parent element for chatbot container not found.");
+        return;
+    }
 
     if (!chatbot) {
         // Create chatbot UI
@@ -216,6 +220,7 @@ async function sendMessage(input, messages) {
 
     // Send the message to the AI with context
     sendMessageToAI(userMessage, messages);
+
 }
 
 async function sendMessageToAI(userMessage, messages) {
@@ -299,13 +304,18 @@ function getExtractedProblemDetails() {
 
 function extractProblemDetails() {
     try {
-        const { questionName, description, constraints } = getExtractedProblemDetails();
-        const extractedDetails = { questionName, description, constraints };
-        initializeChat(document.getElementById('messages'), extractedDetails);
+        const details = getExtractedProblemDetails();
+        const messages = document.getElementById('messages');
+        if (!messages) {
+            console.log("Chatbot messages container not found.");
+            return;
+        }
+        initializeChat(messages, details);
     } catch (error) {
         console.error('Error extracting problem details:', error);
     }
 }
+
 
 function initializeChat(messages, details) {
     const { questionName, description, constraints } = details;
@@ -376,40 +386,58 @@ function renderMarkdown(text) {
 // Observe URL changes to ensure proper reactivity.
 observeUrlChanges();
 
-
  
-function trackUrlAndClearChat() {
+function trackUrlAndManageChat() {
     let lastUrl = window.location.href;
 
- 
     function clearChatMessages() {
         const chatMessagesElement = document.querySelector('#chatbot-messages'); // Adjust the selector if needed
         if (chatMessagesElement) {
-            chatMessagesElement.innerHTML = ''; // Clear the content of the chat container
+            chatMessagesElement.innerHTML = ''; // Clear the chat container
         }
     }
- 
+
+    function saveChatMessages() {
+        const chatMessagesElement = document.querySelector('#chatbot-messages'); // Adjust the selector if needed
+        if (chatMessagesElement) {
+            const messages = chatMessagesElement.innerHTML; // Save the current chat messages
+            localStorage.setItem(lastUrl, messages); // Use the URL as the key
+        }
+    }
+
+    function loadChatMessages() {
+        const chatMessagesElement = document.querySelector('#chatbot-messages'); // Adjust the selector if needed
+        if (chatMessagesElement) {
+            const savedMessages = localStorage.getItem(lastUrl); // Retrieve chat data for the current URL
+            chatMessagesElement.innerHTML = savedMessages || ''; // Load saved messages or clear if none
+        }
+    }
+
     function isOnProblemsPath() {
         const pathname = window.location.pathname;
         return pathname.includes('/problems/');
     }
- 
+
     function handleUrlChange() {
         const currentUrl = window.location.href;
-        if (currentUrl !== lastUrl) { 
-            lastUrl = currentUrl;  
+        if (currentUrl !== lastUrl) {
+            saveChatMessages(); // Save current chat history for the last URL
+            lastUrl = currentUrl;
             if (isOnProblemsPath()) {
-                clearChatMessages();  
+                loadChatMessages(); // Load chat history for the new URL or clear if none exists
+            } else {
+                clearChatMessages(); // Clear chat if not on the problems path
             }
         }
     }
- 
+
     window.addEventListener('popstate', handleUrlChange);
- 
     window.addEventListener('hashchange', handleUrlChange);
 
-     
-    setInterval(handleUrlChange, 500); 
+    setInterval(handleUrlChange, 500); // Periodic check for URL changes
+
+    // Load initial chat messages
+    loadChatMessages();
 }
- 
-trackUrlAndClearChat();
+
+trackUrlAndManageChat();
