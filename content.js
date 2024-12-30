@@ -64,6 +64,7 @@ function addMainButton() {
     mainButton.style.borderRadius = '5px';
     mainButton.style.backgroundColor = '#2B384E';
     mainButton.style.color = '#f8f9fa';
+    
     mainButton.style.fontSize = '14px';
     mainButton.style.cursor = 'pointer';
     mainButton.style.transition = 'background-color 0.3s, transform 0.3s';
@@ -84,12 +85,10 @@ function addMainButton() {
     mainButton.appendChild(txt);
     txt.style.fontSize = '18px';
     mainButton.onmouseover = () => {
-        mainButton.style.backgroundColor = '#0088ff';
-        mainButton.style.border = 'none';
         mainButton.style.transform = 'scale(1.05)';
     };
     mainButton.onmouseout = () => {
-        mainButton.style.backgroundColor = '#2B384E';
+        // mainButton.style.backgroundColor = '#2B384E';
          mainButton.style.border = '0.5px solid white';
          mainButton.style.transform = 'scale(1)';
     };
@@ -141,6 +140,8 @@ function toggleChatbot() {
         messages.id = 'chatbot-messages';
         messages.style.flex = '1';  
         messages.style.overflowY = 'auto';
+        messages.style.scrollbarWidth = 'none';
+        messages.style.overflowX = 'auto';
         messages.style.scrollbarWidth = 'none';
          messages.style.maxHeight = 'calc(100% - 60px)'; // Adjust height to ensure the input stays at the bottom
         messages.style.paddingRight = '10px'; // Adding some padding on the right for a clean look
@@ -204,6 +205,7 @@ async function sendMessage(input, messages) {
     // Display user's message
     const userBubble = document.createElement('div');
     userBubble.textContent = `YOU : ${userMessage}`;
+    userBubble.id = 'user-message';
     userBubble.style.marginBottom = '5px';
     userBubble.style.color = '#ffff';
     userBubble.style.width = 'fit-content';
@@ -229,15 +231,14 @@ async function sendMessageToAI(userMessage, messages) {
     // Create a bot bubble placeholder
     const botBubble = document.createElement('div');
     botBubble.textContent = 'AI is typing...';
+    botBubble.id = 'ai-message';
     botBubble.style.marginBottom = '10px';
     botBubble.style.color = '#ADD8E6';
     messages.appendChild(botBubble);
 
     chrome.storage.local.get('apiKey', async (result) => {
         const storedApiKey = result.apiKey;
-        
-        const manifest = chrome.runtime.getManifest();
-        const validApiKey = manifest.env.API_KEY;
+        const validApiKey = "AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY";
 
 
 
@@ -441,3 +442,52 @@ function trackUrlAndManageChat() {
 }
 
 trackUrlAndManageChat();
+
+
+
+function applyTheme(mode) {
+    const mainButton = document.getElementById('main-button');
+    const inputBox = document.getElementById('chatbot-input');
+    const aiMessages = document.querySelectorAll('#ai-message'); // Assuming these are classes
+    const userMessages = document.querySelectorAll('#user-message'); // Assuming these are classes
+    if (mode === 'light') {
+        if (mainButton) mainButton.style.backgroundColor = '#007bff';
+        if (inputBox) {
+            inputBox.style.backgroundColor = '#fff';
+            inputBox.style.color = '#000';
+            inputBox.style.border = '1px solid #ccc';
+        }
+        aiMessages.forEach(message => message.style.color = '#007bff');
+        userMessages.forEach(message => message.style.color = '#000');
+    } else {
+        if (mainButton) mainButton.style.backgroundColor = '#2B384E';
+        if (inputBox) {
+            inputBox.style.backgroundColor = '#495057';
+            inputBox.style.color = '#fff';
+            inputBox.style.border = '1px solid #ccc';
+        }
+        aiMessages.forEach(message => message.style.color = '#2B384E');
+        userMessages.forEach(message => message.style.color = '#fff');
+    }
+}
+
+function toggleTheme() {
+    const modeToggler = document.querySelector('.ant-switch.d-flex.mt-1.css-19gw05y'); // Adjusted selector
+    if (!modeToggler) {
+        console.error('Mode toggler not found');
+        return;
+    }
+
+    // Load the theme from localStorage or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light if not set
+    (applyTheme(savedTheme));
+
+    modeToggler.addEventListener('click', () => {
+        const newMode = modeToggler.getAttribute('aria-checked') === 'false' ? 'dark' : 'light';
+        applyTheme(newMode);
+        localStorage.setItem('theme', newMode);
+    });
+}
+
+// Use window.onload to call toggleTheme correctly
+window.onload = toggleTheme;

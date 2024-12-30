@@ -1,18 +1,25 @@
 
-# 🌟 AI Powered CHATBOT for Maang.in 🌟
+# 🌟 AlgoAid - AI Powered CHATBOT for Maang.in 🌟
 
 ## AZ WINTER HACKATHON 2024 Submission
-Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API,this product aims to enhance your learning experience.
+Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API,AlgoAid aims to enhance your learning experience.
 
 ## 🚀 Features
 
 - **API KEY Validation**: The users are asked for the their api key which authenticates the user and later gets stored in chrome storage
+
 - **AI Assistance**: Get hints and solutions instantly for your queries by the click of a button.
-- **User Interface**: Easy integration with maang.in aesthetic.
+
+- **User Interface**: Easy integration with maang.in aesthetic.Seamless integration of Light and Dark Mode.
+
 - **Fast Responses**: Leverages the power of the Gemini API for quick assistance.
+
 - **Awesome Responses**: The question description and constraints are fed to the ai for better and more relevant response.
+
 - **DOM Manipulation**: Both the button as well as the chats disappear as soon as we go to next question.
+
 - **Data Storage**: When we come back to same question, chat history remains preserved using local Storage. 
+  
 
 ## 🛠️ Installation
 

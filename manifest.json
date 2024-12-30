@@ -32,9 +32,6 @@
     "host_permissions": [
     "https://generativelanguage.googleapis.com/*"
   ],
-  "env": {
-    "API_KEY": "AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY"
-  },
   "action": {
     "default_icon": {
       "16": "assets/logo.png",
