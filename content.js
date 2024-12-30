@@ -237,7 +237,9 @@ async function sendMessageToAI(userMessage, messages) {
     messages.appendChild(botBubble);
 
     chrome.storage.local.get('apiKey', async (result) => {
-        const storedApiKey = result.apiKey;
+        var storedApiKey = "";
+        if (result)
+         storedApiKey = result.apiKey;
         const validApiKey = "AIzaSyAptP95baweFFbFrQnSQQTGADLimeOFVaY";
 
 
