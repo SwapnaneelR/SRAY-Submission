@@ -474,7 +474,7 @@ function applyTheme(mode) {
 function toggleTheme() {
     const modeToggler = document.querySelector('.ant-switch.d-flex.mt-1.css-19gw05y'); // Adjusted selector
     if (!modeToggler) {
-        console.error('Mode toggler not found');
+        console.log('Mode toggler not found');
         return;
     }
 
