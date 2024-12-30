@@ -130,15 +130,15 @@ function toggleChatbot() {
         chatbot.style.display = 'flex';
         chatbot.style.flexDirection = 'column';  
         chatbot.style.overflowY = 'auto'; 
-        // chatbot.style.overflowY = 'scroll'; // Ensure scroll functionality
-        chatbot.style.scrollbarWidth = 'none';
+
 
         // Chat messages area
         const messages = document.createElement('div');
         messages.id = 'chatbot-messages';
         messages.style.flex = '1';  
-        messages.style.overflowY = 'auto';  
-        messages.style.maxHeight = 'calc(100% - 60px)'; // Adjust height to ensure the input stays at the bottom
+        messages.style.overflowY = 'auto';
+        messages.style.scrollbarWidth = 'none';
+         messages.style.maxHeight = 'calc(100% - 60px)'; // Adjust height to ensure the input stays at the bottom
         messages.style.paddingRight = '10px'; // Adding some padding on the right for a clean look
         chatbot.appendChild(messages);
 
@@ -201,7 +201,7 @@ async function sendMessage(input, messages) {
     const userBubble = document.createElement('div');
     userBubble.textContent = `YOU : ${userMessage}`;
     userBubble.style.marginBottom = '5px';
-    userBubble.style.color = '#ffffff';
+    userBubble.style.color = '#ffff';
     userBubble.style.width = 'fit-content';
     userBubble.style.fontSize = '16px';
     messages.appendChild(userBubble);

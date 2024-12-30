@@ -2,7 +2,7 @@
 # 🌟 SRAY - AI CHATBOT for Maang.in 🌟
 
 ## AZ WINTER HACKATHON 2024 Submission
-Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API, SRAY aims to enhance your learning experience.
+Welcome to the project! This Google Chrome extension introduces an AI Help button on the **maang.in** website, allowing users to ask for hints or solutions related to specific questions. Powered by JavaScript and the Gemini API, this product aims to enhance your learning experience.
 
 ## 🚀 Features
 
